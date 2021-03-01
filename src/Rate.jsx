@@ -15,6 +15,7 @@ export default class Rate extends Component {
             handle: this.state.handle
         }
         axios.post("http://localhost:5000/nrating", data).then(response => {
+            console.log(response.data);
             this.setState({
                 userData: response.data
             });
@@ -35,48 +36,22 @@ export default class Rate extends Component {
                         <button type="submit">Go</button>
                     </form> :
                     <div>
-                        <h1>User Rating: {this.state.userData.ques[0].name}</h1>
+                        <h1>User Rating: {this.state.userData.rating}</h1>
+                        <h1>Questions: </h1>
+                        <h2> {this.state.userData.ques[0].name}</h2>
+                        <h2> {this.state.userData.ques[1].name}</h2>
+                        <h2> {this.state.userData.ques[2].name}</h2>
+                        <h2> {this.state.userData.ques[3].name}</h2>
+                        <h2> {this.state.userData.ques[4].name}</h2>
+                        <h2> {this.state.userData.ques[5].name}</h2>
+                        <h2> {this.state.userData.ques[6].name}</h2>
+                        <h2> {this.state.userData.ques[7].name}</h2>
+                        <h2> {this.state.userData.ques[8].name}</h2>
+                        <h2> {this.state.userData.ques[9].name}</h2>
                     </div>
                 }
             </div>
         );
     }
 }
-// export default class Rate extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = { name: '' };
-//     }
-
-//     handleChange = (event) => {
-//         this.setState({ [event.target.name]: event.target.value });
-//     }
-
-//     handleSubmit = (event) => {
-//         alert('A form was submitted: ' + this.state);
-
-//         fetch('http://localhost:5000/rating', {
-//             method: 'POST',
-//             // We convert the React state to JSON and send it as the POST body
-//             body: JSON.stringify(this.state)
-//         }).then(function (response) {
-//             console.log(response)
-//             return response.json();
-//         });
-
-//         event.preventDefault();
-//     }
-
-//     render() {
-//         return (
-//             <form onSubmit={this.handleSubmit}>
-//                 <label>
-//                     Name:
-//           <input type="text" value={this.state.value} name="name" onChange={this.handleChange} />
-//                 </label>
-//                 <input type="submit" value="Submit" />
-//             </form>
-//         );
-//     }
-// }
 
