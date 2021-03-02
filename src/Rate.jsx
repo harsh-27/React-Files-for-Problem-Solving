@@ -37,17 +37,22 @@ export default class Rate extends Component {
                     </form> :
                     <div>
                         <h1>User Rating: {this.state.userData.rating}</h1>
-                        <h1>Questions: </h1>
-                        <h2> {this.state.userData.ques[0].name}</h2>
-                        <h2> {this.state.userData.ques[1].name}</h2>
-                        <h2> {this.state.userData.ques[2].name}</h2>
-                        <h2> {this.state.userData.ques[3].name}</h2>
-                        <h2> {this.state.userData.ques[4].name}</h2>
-                        <h2> {this.state.userData.ques[5].name}</h2>
-                        <h2> {this.state.userData.ques[6].name}</h2>
-                        <h2> {this.state.userData.ques[7].name}</h2>
-                        <h2> {this.state.userData.ques[8].name}</h2>
-                        <h2> {this.state.userData.ques[9].name}</h2>
+                        {this.state.userData.ques.length > 0 ?
+                            <div>
+                                <h1>Questions: </h1>
+                                <h2>{this.state.userData.ques[0].contestId}  {this.state.userData.ques[0].name}</h2>
+                                <h2>{this.state.userData.ques[1].contestId}  {this.state.userData.ques[1].name}</h2>
+                                <h2>{this.state.userData.ques[2].contestId}  {this.state.userData.ques[2].name}</h2>
+                                <h2>{this.state.userData.ques[3].contestId}  {this.state.userData.ques[3].name}</h2>
+                                <h2>{this.state.userData.ques[4].contestId}  {this.state.userData.ques[4].name}</h2>
+                                <h2>{this.state.userData.ques[5].contestId}  {this.state.userData.ques[5].name}</h2>
+                                <h2>{this.state.userData.ques[6].contestId}  {this.state.userData.ques[6].name}</h2>
+                                <h2>{this.state.userData.ques[7].contestId}  {this.state.userData.ques[7].name}</h2>
+                                <h2>{this.state.userData.ques[8].contestId}  {this.state.userData.ques[8].name}</h2>
+                                <h2>{this.state.userData.ques[9].contestId}  {this.state.userData.ques[9].name}</h2>
+                            </div>
+                            : <h2>Please Enter Valid Handle</h2>
+                        }
                     </div>
                 }
             </div>
