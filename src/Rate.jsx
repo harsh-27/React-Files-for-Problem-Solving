@@ -31,11 +31,11 @@ function Rate() {
                 <form onSubmit={onSubmit}>
                     <label>User Name</label>
                     <input id="UserName" type="text" name="userName" onChange={(e) => {
-                        setHandle(e.target.value);
+                        setUserName(e.target.value);
                     }} />
                     <label>Password</label>
                     <input id="Password" type="text" name="password" onChange={(e) => {
-                        setHandle(e.target.value);
+                        setPassword(e.target.value);
                     }} />
                     <label>User Handle</label>
                     <input id="Handle" type="text" name="userHandle" onChange={(e) => {
