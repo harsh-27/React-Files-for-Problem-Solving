@@ -8,6 +8,7 @@ function Rate() {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [dataSet, toogleSet] = useState(false);
+    const [todoQues, setTodoQues] = useState('');
     function onSubmit(event) {
         event.preventDefault();
         let data = {
@@ -32,10 +33,13 @@ function Rate() {
         }
     }, userData);
 
-
+    function onClick(event) {
+        event.preventDefault();
+        console.log("I got Clicked");
+    }
 
     function show(e) {
-        return (<a key={`${e.contestId}${e.index}`} href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}><h2>{e.contestId}  {e.name}</h2></a>);
+        return (<div><a key={`${e.contestId}${e.index}`} href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}><h2>{e.contestId}  {e.name}</h2></a><button onClick={onClick}>ADD</button></div>);
     }
 
     return (
@@ -62,7 +66,7 @@ function Rate() {
                         <div>
                             {userData.ques == 0 ?
                                 <h1>You Have not solved any question Yet</h1>
-                                : <div>
+                                : <div key>
                                     <h1>Questions: </h1>
                                     {userData.ques.map(show)}
                                 </div>
