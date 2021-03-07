@@ -45,7 +45,7 @@ function Rate() {
                 </form> :
                 <div>
                     <h1>User Rating: {userData.rating}</h1>
-                    {userData.ques.length > 0 ?
+                    {userData.rating > 0 ?
                         <div>
                             <h1>Questions: </h1>
                             {userData.ques.map(show)}
