@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 
 function Rate() {
@@ -7,7 +7,7 @@ function Rate() {
     const [handle, setHandle] = useState('');
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
-
+    const [dataSet, toogleSet] = useState(false);
     function onSubmit(event) {
         event.preventDefault();
         let data = {
@@ -18,23 +18,36 @@ function Rate() {
         axios.post("http://localhost:5000/nrating", data).then(response => {
             console.log(response.data);
             setUserData(response.data);
-        });
+            sessionStorage.setItem("userD", JSON.stringify(response.data));
+            return true;
+        }).then((z) => {
+            if (z)
+                toogleSet(true);
+        })
     }
+    useEffect(() => {
+        if (window.sessionStorage.getItem('userD')) {
+            setUserData(JSON.parse(window.sessionStorage.getItem('userD')));
+            toogleSet(true);
+        }
+    }, userData);
+
+
 
     function show(e) {
-        return (<a href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}><h2>{e.contestId}  {e.name}</h2></a>);
+        return (<a key={`${e.contestId}${e.index}`} href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}><h2>{e.contestId}  {e.name}</h2></a>);
     }
 
     return (
         <div>
-            {userData === null ?
+            {!dataSet ?
                 <form onSubmit={onSubmit}>
                     <label>User Name</label>
                     <input id="UserName" type="text" name="userName" onChange={(e) => {
                         setUserName(e.target.value);
                     }} />
                     <label>Password</label>
-                    <input id="Password" type="text" name="password" onChange={(e) => {
+                    <input id="Password" type="password" name="password" onChange={(e) => {
                         setPassword(e.target.value);
                     }} />
                     <label>User Handle</label>
@@ -45,10 +58,16 @@ function Rate() {
                 </form> :
                 <div>
                     <h1>User Rating: {userData.rating}</h1>
-                    {userData.rating > 0 ?
+                    {userData.rating >= 0 ?
                         <div>
-                            <h1>Questions: </h1>
-                            {userData.ques.map(show)}
+                            {userData.ques == 0 ?
+                                <h1>You Have not solved any question Yet</h1>
+                                : <div>
+                                    <h1>Questions: </h1>
+                                    {userData.ques.map(show)}
+                                </div>
+                            }
+
                         </div>
                         : <h2>Please Enter Valid Handle</h2>
                     }
