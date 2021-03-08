@@ -9,6 +9,7 @@ function Rate() {
     const [password, setPassword] = useState('');
     const [dataSet, toogleSet] = useState(false);
     const [todoQues, setTodoQues] = useState('');
+    useEffect(() => console.log("re-render because todoQues changed:", todoQues), [todoQues])
     function onSubmit(event) {
         event.preventDefault();
         let data = {
@@ -35,11 +36,22 @@ function Rate() {
 
     function onClick(event) {
         event.preventDefault();
-        console.log("I got Clicked");
+        setTodoQues(document.getElementById(event.target.id).value);
+        console.log(document.getElementById(event.target.id).value);
+        //console.log(todoQues);
+        let quesData = {
+            todoQues: todoQues
+        }
+        axios.post("http://localhost:5000/list", quesData).then(response => {
+            console.log(response.quesData);
+        })
     }
 
     function show(e) {
-        return (<div><a key={`${e.contestId}${e.index}`} href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}><h2>{e.contestId}  {e.name}</h2></a><button onClick={onClick}>ADD</button></div>);
+        return (<div><a href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}>
+            <h2>{e.contestId}</h2>
+            <h2 >{e.name}</h2></a>
+            <button id={e.name} value={e.name} onClick={onClick}>ADD</button></div>);
     }
 
     return (
