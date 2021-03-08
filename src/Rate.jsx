@@ -9,10 +9,12 @@ function Rate() {
     const [password, setPassword] = useState('');
     const [dataSet, toogleSet] = useState(false);
     const [todoQues, setTodoQues] = useState('');
+    const [removeQues, setRemoveQues] = useState('');
     useEffect(() => {
         console.log("re-render because todoQues changed:", todoQues)
         let quesData = {
-            todoQues: todoQues
+            todoQues: todoQues,
+            handle: handle
         }
         if (quesData.todoQues != '') {
             axios.post("http://localhost:5000/list", quesData).then(response => {
@@ -45,18 +47,36 @@ function Rate() {
     }, userData);
 
     function onClick(event) {
-        //event.preventDefault();
+        event.preventDefault();
         setTodoQues(document.getElementById(event.target.id).value);
         console.log(document.getElementById(event.target.id).value);
         //console.log(todoQues);
 
     }
-
+    useEffect(() => {
+        console.log("re-render because removeQues changed:", removeQues)
+        let quesData = {
+            removeQues: removeQues,
+            handle: handle
+        }
+        if (quesData.removeQues != '') {
+            axios.post("http://localhost:5000/uwlist", quesData).then(response => {
+                console.log(response.quesData);
+            })
+        }
+    }, [removeQues])
+    function handleClick(event) {
+        event.preventDefault();
+        setRemoveQues(document.getElementById(event.target.id).value);
+        console.log(document.getElementById(event.target.id).value);
+    }
     function show(e) {
         return (<div><a href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}>
             <h2>{e.contestId}</h2>
             <h2 >{e.name}</h2></a>
-            <button id={e.name} value={e.name} onClick={onClick}>ADD</button></div>);
+            <button id={e.name} value={e.name} onClick={onClick}>ADD</button>
+            <button id={e.name} value={e.name} onClick={handleClick}>REMOVE</button>
+        </div>);
     }
 
     return (
