@@ -9,7 +9,17 @@ function Rate() {
     const [password, setPassword] = useState('');
     const [dataSet, toogleSet] = useState(false);
     const [todoQues, setTodoQues] = useState('');
-    useEffect(() => console.log("re-render because todoQues changed:", todoQues), [todoQues])
+    useEffect(() => {
+        console.log("re-render because todoQues changed:", todoQues)
+        let quesData = {
+            todoQues: todoQues
+        }
+        if (quesData.todoQues != '') {
+            axios.post("http://localhost:5000/list", quesData).then(response => {
+                console.log(response.quesData);
+            })
+        }
+    }, [todoQues])
     function onSubmit(event) {
         event.preventDefault();
         let data = {
@@ -35,16 +45,11 @@ function Rate() {
     }, userData);
 
     function onClick(event) {
-        event.preventDefault();
+        //event.preventDefault();
         setTodoQues(document.getElementById(event.target.id).value);
         console.log(document.getElementById(event.target.id).value);
         //console.log(todoQues);
-        let quesData = {
-            todoQues: todoQues
-        }
-        axios.post("http://localhost:5000/list", quesData).then(response => {
-            console.log(response.quesData);
-        })
+
     }
 
     function show(e) {
