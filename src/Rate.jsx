@@ -8,23 +8,15 @@ function Rate() {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [dataSet, toogleSet] = useState(false);
-    const [todoQues, setTodoQues] = useState('');
-    const [removeQues, setRemoveQues] = useState('');
-
-
-    useEffect(() => {
-        console.log("re-render because todoQues changed:", todoQues)
-        let quesData = {
-            todoQues: todoQues,
-            handle: handle
-        }
-        if (quesData.todoQues != '') {
-            axios.post("http://localhost:5000/list", quesData).then(response => {
-                console.log(response.quesData);
-            })
-        }
-    }, [todoQues])
-
+    const [todoQues, setTodoQues] = useState({
+        name: '',
+        contestId: ''
+    });
+    const [removeQues, setRemoveQues] = useState({
+        name: '',
+        contestId: ''
+    });
+    const [lo, setLogout] = useState(false);
 
     function onSubmit(event) {
         event.preventDefault();
@@ -37,6 +29,7 @@ function Rate() {
             console.log(response.data);
             setUserData(response.data);
             sessionStorage.setItem("userD", JSON.stringify(response.data));
+            sessionStorage.setItem("handle", handle);
             return true;
         }).then((z) => {
             if (z)
@@ -44,28 +37,45 @@ function Rate() {
         })
     }
 
+    useEffect(() => {
+        console.log("re-render because todoQues changed:", todoQues)
+        let quesData = {
+            name: todoQues.name,
+            contestId: todoQues.contestId,
+            handle: handle
+        }
+        if (quesData.todoQues != '') {
+            axios.post("http://localhost:5000/list", quesData).then(response => {
+                console.log(response.quesData);
+            })
+        }
+    }, [todoQues])
 
     useEffect(() => {
         if (window.sessionStorage.getItem('userD')) {
             setUserData(JSON.parse(window.sessionStorage.getItem('userD')));
+            setHandle(window.sessionStorage.getItem("handle"));
             toogleSet(true);
         }
+
     }, userData);
 
-
-    function onclick(event) {
-        event.preventDefault();
-        setTodoQues(document.getElementById(event.target.id).id);
-        console.log(document.getElementById(event.target.id).id);
-        document.getElementById(event.target.id).disabled = true;
-        document.getElementById(event.target.value).disabled = true;
-    }
-
+    useEffect(() => {
+        if (lo) {
+            console.log("in useefect");
+            sessionStorage.clear();
+            setUserData(null);
+            setHandle('');
+            toogleSet(false);
+            setLogout(false);
+        }
+    });
 
     useEffect(() => {
         console.log("re-render because removeQues changed:", removeQues)
         let quesData = {
-            removeQues: removeQues,
+            name: removeQues.name,
+            contestId: removeQues.contestId,
             handle: handle
         }
         if (quesData.removeQues != '') {
@@ -75,15 +85,27 @@ function Rate() {
         }
     }, [removeQues]);
 
-
-    function handleclick(event) {
+    function onclick(event) {
         event.preventDefault();
-        setRemoveQues(document.getElementById(event.target.id).value);
-        console.log(document.getElementById(event.target.id).value);
+        setTodoQues({
+            name: document.getElementById(event.target.id).id,
+            contestId: document.getElementById(event.target.id).value
+        });
+        console.log(document.getElementById(event.target.id).id);
         document.getElementById(event.target.id).disabled = true;
         document.getElementById(event.target.value).disabled = true;
     }
 
+    function handleclick(event) {
+        event.preventDefault();
+        setRemoveQues({
+            name: document.getElementById(event.target.id).value,
+            contestId: document.getElementById(event.target.id).id
+        });
+        console.log(document.getElementById(event.target.id).value);
+        document.getElementById(event.target.id).disabled = true;
+        document.getElementById(event.target.value).disabled = true;
+    }
 
     function show(e) {
         return (<div><a href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}>
@@ -92,6 +114,11 @@ function Rate() {
             <button id={e.name} value={e.contestId + e.index} onClick={onclick}>ADD</button>
             <button id={e.contestId + e.index} value={e.name} onClick={handleclick}>REMOVE</button>
         </div>);
+    }
+
+    function logout() {
+        console.log("logout button pressed!");
+        setLogout(true);
     }
 
 
@@ -124,6 +151,7 @@ function Rate() {
                                     {userData.ques.map(show)}
                                 </div>
                             }
+                            <button onClick={logout}>Logout</button>
                         </div>
                         : <h2>Please Enter Valid Handle</h2>
                     }
