@@ -10,6 +10,8 @@ function Rate() {
     const [dataSet, toogleSet] = useState(false);
     const [todoQues, setTodoQues] = useState('');
     const [removeQues, setRemoveQues] = useState('');
+
+
     useEffect(() => {
         console.log("re-render because todoQues changed:", todoQues)
         let quesData = {
@@ -22,6 +24,8 @@ function Rate() {
             })
         }
     }, [todoQues])
+
+
     function onSubmit(event) {
         event.preventDefault();
         let data = {
@@ -39,6 +43,8 @@ function Rate() {
                 toogleSet(true);
         })
     }
+
+
     useEffect(() => {
         if (window.sessionStorage.getItem('userD')) {
             setUserData(JSON.parse(window.sessionStorage.getItem('userD')));
@@ -46,13 +52,16 @@ function Rate() {
         }
     }, userData);
 
-    function onClick(event) {
-        event.preventDefault();
-        setTodoQues(document.getElementById(event.target.id).value);
-        console.log(document.getElementById(event.target.id).value);
-        //console.log(todoQues);
 
+    function onclick(event) {
+        event.preventDefault();
+        setTodoQues(document.getElementById(event.target.id).id);
+        console.log(document.getElementById(event.target.id).id);
+        document.getElementById(event.target.id).disabled = true;
+        document.getElementById(event.target.value).disabled = true;
     }
+
+
     useEffect(() => {
         console.log("re-render because removeQues changed:", removeQues)
         let quesData = {
@@ -64,20 +73,27 @@ function Rate() {
                 console.log(response.quesData);
             })
         }
-    }, [removeQues])
-    function handleClick(event) {
+    }, [removeQues]);
+
+
+    function handleclick(event) {
         event.preventDefault();
         setRemoveQues(document.getElementById(event.target.id).value);
         console.log(document.getElementById(event.target.id).value);
+        document.getElementById(event.target.id).disabled = true;
+        document.getElementById(event.target.value).disabled = true;
     }
+
+
     function show(e) {
         return (<div><a href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}>
             <h2>{e.contestId}</h2>
             <h2 >{e.name}</h2></a>
-            <button id={e.name} value={e.name} onClick={onClick}>ADD</button>
-            <button id={e.name} value={e.name} onClick={handleClick}>REMOVE</button>
+            <button id={e.name} value={e.contestId + e.index} onClick={onclick}>ADD</button>
+            <button id={e.contestId + e.index} value={e.name} onClick={handleclick}>REMOVE</button>
         </div>);
     }
+
 
     return (
         <div>
@@ -103,12 +119,11 @@ function Rate() {
                         <div>
                             {userData.ques == 0 ?
                                 <h1>You Have not solved any question Yet</h1>
-                                : <div key>
+                                : <div>
                                     <h1>Questions: </h1>
                                     {userData.ques.map(show)}
                                 </div>
                             }
-
                         </div>
                         : <h2>Please Enter Valid Handle</h2>
                     }
