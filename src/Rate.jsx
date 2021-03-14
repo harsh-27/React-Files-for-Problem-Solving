@@ -158,6 +158,7 @@ function Rate() {
             <a href={"https://codeforces.com/problemset/problem/" + contest(event.contestId)}>
                 <h2>{event.contestId} {event.name}</h2>
             </a>
+            <button id={event.contestId + event.index} value={event.name} onClick={handleclick}>REMOVE</button>
         </div>)
     }
 
