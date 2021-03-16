@@ -19,19 +19,16 @@ function Rate() {
     //const [lo, setLogout] = useState(false);
     const [toDoList, setToDoList] = useState(null);
 
-
-    const left = {
-        float: "left",
-        width: "50%"
-    };
     async function onSubmit(event) {
         event.preventDefault();
         var res = await callData(userName, password, handle);
-        sessionStorage.setItem("userD", JSON.stringify(res.userD));
-        sessionStorage.setItem("handle", res.handle);
-        setUserData(res.userD);
-        setHandle(res.handle);
-        toogleSet(true);
+        // console.log(res);
+
+        // sessionStorage.setItem("userD", JSON.stringify(res.userD));
+        // sessionStorage.setItem("handle", res.handle);
+        // setUserData(res.userD);
+        // setHandle(res.handle);
+        // toogleSet(true);
     }
 
     function callData(userName, password, handle) {
@@ -47,21 +44,31 @@ function Rate() {
                 handle: handle
             };
         }).then(() => {
-            return res;
+            sessionStorage.setItem("userD", JSON.stringify(res.userD));
+            sessionStorage.setItem("handle", res.handle);
+            setUserData(res.userD);
+            setHandle(res.handle);
+            toogleSet(true);
         })
+        // console.log(res);
         return res;
     }
 
-    useEffect(() => {
+    useEffect(async () => {
         let quesData = {
             name: todoQues.name,
             contestId: todoQues.contestId,
             handle: handle
         }
         if (quesData.name !== '') {
-            axios.post("http://localhost:5000/list", quesData).then(response => {
-                setToDoList(response.data);
+            var response;
+            axios.post("http://localhost:5000/list", quesData).then(async (res) => {
+                // response = res;
+                // console.log(res);
+                await callData(userName, password, handle);
+                setToDoList(res.data);
             })
+
         }
     }, [todoQues])
 
@@ -94,29 +101,49 @@ function Rate() {
             handle: handle
         }
         if (quesData.contestId !== '') {
-            axios.post("http://localhost:5000/uwlist", quesData).then(response => {
+            axios.post("http://localhost:5000/uwlist", quesData).then(async response => {
+                await callData(userName, password, handle);
+                setToDoList(response.data);
             })
         }
     }, [removeQues]);
+    function abc(event) {
+        setTodoQues({
+            name: document.getElementById(event.target.id).id,
+            contestId: document.getElementById(event.target.id).value
+        });
+        return null;
+    }
 
-    function onclick(event) {
+    async function onclick(event) {
         event.preventDefault();
         setTodoQues({
             name: document.getElementById(event.target.id).id,
             contestId: document.getElementById(event.target.id).value
         });
-        document.getElementById(event.target.id).disabled = true;
-        document.getElementById(event.target.value).disabled = true;
+        // var temp = await abc(event);
+        // console.log(toDoList);
+        // var res = await callData(userName, password, handle);
+
+        // document.getElementById(event.target.id).disabled = true;
+        // document.getElementById(event.target.value).disabled = true;
     }
 
     function handleclick(event) {
         event.preventDefault();
+        if (document.getElementById(event.target.id) === null)
+            return;
         setRemoveQues({
             name: document.getElementById(event.target.id).value,
             contestId: document.getElementById(event.target.id).id
         });
-        document.getElementById(event.target.id).disabled = true;
-        document.getElementById(event.target.value).disabled = true;
+        // if (document.getElementById(event.target.id) !== null) {
+        //     document.getElementById(event.target.id).disabled = true
+        // }
+
+        // if (document.getElementById(event.target.value) !== null) {
+        //     document.getElementById(event.target.value).disabled = true
+        // }
     }
 
     function show(e, index) {
@@ -158,16 +185,16 @@ function Rate() {
             <a href={"https://codeforces.com/problemset/problem/" + contest(event.contestId)}>
                 <h2>{event.contestId} {event.name}</h2>
             </a>
-            <button id={event.contestId + event.index} value={event.name} onClick={handleclick}>REMOVE</button>
+            <button id={event.contestId} value={event.name} onClick={handleclick}>REMOVE</button>
         </div>)
     }
 
     return (
         <div>
             {!dataSet ?
-                <form onSubmit={onSubmit}>
+                <form onSubmit={onSubmit} className="container">
                     <label>User Name</label>
-                    <input id="UserName" type="text" name="userName" onChange={(e) => {
+                    <input id="UserName" type="text" name="userName" spellCheck="false" onChange={(e) => {
                         setUserName(e.target.value);
                     }} />
                     <label>Password</label>
@@ -175,24 +202,24 @@ function Rate() {
                         setPassword(e.target.value);
                     }} />
                     <label>User Handle</label>
-                    <input id="Handle" type="text" name="userHandle" onChange={(e) => {
+                    <input id="Handle" type="text" name="userHandle" spellCheck="false" onChange={(e) => {
                         setHandle(e.target.value);
                     }} />
-                    <button type="submit">Go</button>
+                    <button type="submit" className="submit">Go</button>
                 </form> :
                 <div>
                     <h1>User Rating: {userData.rating}</h1>
 
                     {userData.rating >= 0 ?
-                        <div>
+                        <div className="row">
                             {userData.ques == 0 ?
                                 <h1>You Have not solved any question Yet</h1>
                                 : <div>
-                                    <div style={left}>
+                                    <div className="column">
                                         <h1>Questions: </h1>
                                         {userData.ques.map(show)}
                                     </div>
-                                    <div style={left}>
+                                    <div className="column">
                                         <h1>To Do List</h1>
                                         {toDoList != null ? toDoList.map(showToDoList) : null}
                                     </div>
