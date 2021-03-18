@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
+import * as ReactBootStrap from 'react-bootstrap';
 
 function Rate() {
 
@@ -18,10 +19,13 @@ function Rate() {
     });
     //const [lo, setLogout] = useState(false);
     const [toDoList, setToDoList] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     async function onSubmit(event) {
+        setLoading(true);
         event.preventDefault();
         var res = await callData(userName, password, handle);
+        setLoading(false);
         // console.log(res);
 
         // sessionStorage.setItem("userD", JSON.stringify(res.userD));
@@ -66,10 +70,12 @@ function Rate() {
                 // response = res;
                 // console.log(res);
                 await callData(userName, password, handle);
+                setLoading(false);
                 setToDoList(res.data);
             })
 
         }
+        // setLoading(false);
     }, [todoQues])
 
     useEffect(() => {
@@ -103,6 +109,7 @@ function Rate() {
         if (quesData.contestId !== '') {
             axios.post("http://localhost:5000/uwlist", quesData).then(async response => {
                 await callData(userName, password, handle);
+                setLoading(false);
                 setToDoList(response.data);
             })
         }
@@ -116,11 +123,13 @@ function Rate() {
     }
 
     async function onclick(event) {
+        setLoading(true);
         event.preventDefault();
         setTodoQues({
             name: document.getElementById(event.target.id).id,
             contestId: document.getElementById(event.target.id).value
         });
+        // setLoading(false);
         // var temp = await abc(event);
         // console.log(toDoList);
         // var res = await callData(userName, password, handle);
@@ -130,6 +139,7 @@ function Rate() {
     }
 
     function handleclick(event) {
+        setLoading(true);
         event.preventDefault();
         if (document.getElementById(event.target.id) === null)
             return;
@@ -137,6 +147,7 @@ function Rate() {
             name: document.getElementById(event.target.id).value,
             contestId: document.getElementById(event.target.id).id
         });
+        // setLoading(false);
         // if (document.getElementById(event.target.id) !== null) {
         //     document.getElementById(event.target.id).disabled = true
         // }
@@ -150,8 +161,8 @@ function Rate() {
         return (<div key={index.toString()}><a href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}>
             <h2>{e.contestId + e.index} {e.name}</h2>
         </a>
-            <button id={e.name} value={e.contestId + e.index} onClick={onclick}>ADD</button>
-            <button id={e.contestId + e.index} value={e.name} onClick={handleclick}>REMOVE</button>
+            <button className="buttonclass" id={e.name} value={e.contestId + e.index} onClick={onclick}>ADD</button>
+            <button className="buttonclass" id={e.contestId + e.index} value={e.name} onClick={handleclick}>REMOVE</button>
         </div>);
     }
 
@@ -185,38 +196,45 @@ function Rate() {
             <a href={"https://codeforces.com/problemset/problem/" + contest(event.contestId)}>
                 <h2>{event.contestId} {event.name}</h2>
             </a>
-            <button id={event.contestId} value={event.name} onClick={handleclick}>REMOVE</button>
+            <button className="buttonclass" id={event.contestId} value={event.name} onClick={handleclick}>REMOVE</button>
         </div>)
     }
 
     return (
         <div>
+            {loading ? <div className="loading" /> : null}
             {!dataSet ?
                 <form onSubmit={onSubmit} className="container">
                     <label>User Name</label>
-                    <input id="UserName" type="text" name="userName" spellCheck="false" onChange={(e) => {
+                    <input className="in" id="UserName" type="text" name="userName" spellCheck="false" onChange={(e) => {
                         setUserName(e.target.value);
                     }} />
                     <label>Password</label>
-                    <input id="Password" type="password" name="password" onChange={(e) => {
+                    <input className="in" id="Password" type="password" name="password" onChange={(e) => {
                         setPassword(e.target.value);
                     }} />
                     <label>User Handle</label>
-                    <input id="Handle" type="text" name="userHandle" spellCheck="false" onChange={(e) => {
+                    <input className="in" id="Handle" type="text" name="userHandle" spellCheck="false" onChange={(e) => {
                         setHandle(e.target.value);
                     }} />
-                    <button type="submit" className="submit">Go</button>
+                    <button className="buttonclass" type="submit" className="submit">Go</button>
                 </form> :
                 <div>
-                    <h1>User Rating: {userData.rating}</h1>
+
+                    <div className="row">
+                        <h1 className="column">User Rating: {userData.rating}</h1>
+                        <button id="buttonclass" className="column" onClick={logout} >Logout</button>
+                    </div>
 
                     {userData.rating >= 0 ?
+
                         <div className="row">
+                            {loading ? <div className="loading" /> : null}
                             {userData.ques == 0 ?
                                 <h1>You Have not solved any question Yet</h1>
                                 : <div>
                                     <div className="column">
-                                        <h1>Questions: </h1>
+                                        <h1 className="h11">Questions: </h1>
                                         {userData.ques.map(show)}
                                     </div>
                                     <div className="column">
@@ -227,9 +245,9 @@ function Rate() {
 
 
                             }
-                            <button onClick={logout} >Logout</button>
+
                         </div>
-                        : <h2>Please Enter Valid Handle</h2>
+                        : <div> {userData.rating == -1 ? <h2>Please Enter Valid Handle</h2> : <h2>User Name Already Exist...... Please Enter New One</h2>}</div>
                     }
                 </div>
             }
