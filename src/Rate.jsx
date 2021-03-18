@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
-import * as ReactBootStrap from 'react-bootstrap';
 
 function Rate() {
 
@@ -159,7 +158,7 @@ function Rate() {
 
     function show(e, index) {
         return (<div key={index.toString()}><a href={"https://codeforces.com/problemset/problem/" + e.contestId + "/" + e.index}>
-            <h2>{e.contestId + e.index} {e.name}</h2>
+            <h2 className="h22">{e.contestId + e.index} {e.name}</h2>
         </a>
             <button className="buttonclass" id={e.name} value={e.contestId + e.index} onClick={onclick}>ADD</button>
             <button className="buttonclass" id={e.contestId + e.index} value={e.name} onClick={handleclick}>REMOVE</button>
@@ -194,7 +193,7 @@ function Rate() {
     function showToDoList(event, index) {
         return (<div key={index.toString()}>
             <a href={"https://codeforces.com/problemset/problem/" + contest(event.contestId)}>
-                <h2>{event.contestId} {event.name}</h2>
+                <h2 className="h22">{event.contestId} {event.name}</h2>
             </a>
             <button className="buttonclass" id={event.contestId} value={event.name} onClick={handleclick}>REMOVE</button>
         </div>)
@@ -222,7 +221,7 @@ function Rate() {
                 <div>
 
                     <div className="row">
-                        <h1 className="column">User Rating: {userData.rating}</h1>
+                        <h1 className="column" id="h11">User Rating: {userData.rating}</h1>
                         <button id="buttonclass" className="column" onClick={logout} >Logout</button>
                     </div>
 
@@ -231,14 +230,14 @@ function Rate() {
                         <div className="row">
                             {loading ? <div className="loading" /> : null}
                             {userData.ques == 0 ?
-                                <h1>You Have not solved any question Yet</h1>
+                                <h1 className="h11">You Have not solved any question Yet</h1>
                                 : <div>
                                     <div className="column">
                                         <h1 className="h11">Questions: </h1>
                                         {userData.ques.map(show)}
                                     </div>
                                     <div className="column">
-                                        <h1>To Do List</h1>
+                                        <h1 className="h11">To Do List</h1>
                                         {toDoList != null ? toDoList.map(showToDoList) : null}
                                     </div>
                                 </div>
@@ -247,7 +246,7 @@ function Rate() {
                             }
 
                         </div>
-                        : <div> {userData.rating == -1 ? <h2>Please Enter Valid Handle</h2> : <h2>User Name Already Exist...... Please Enter New One</h2>}</div>
+                        : <div> {userData.rating == -1 ? <h2 className="h22">Please Enter Valid Handle</h2> : <h2 className="h22">User Name Already Exist...... Enter correct details for this user name or create a new Account</h2>}</div>
                     }
                 </div>
             }
